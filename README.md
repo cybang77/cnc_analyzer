@@ -1,2 +1,2 @@
 # cnc_analyzer
-## HN Inc
+! 부하분석
