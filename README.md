@@ -1,7 +1,11 @@
 # cnc_analyzer
 
-## 디펜던시
+## 의존성
 * python 3.7.10
+* tensorflow-gpu 2.4.1
+* matplotlib 3.4.2
+* pandas 1.2.4
+* ipykernel 5.3.4
 
 ## 디렉토리 및 파일 구성
 * 데이터 원본
