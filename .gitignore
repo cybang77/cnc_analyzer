@@ -130,3 +130,7 @@ dmypy.json
 
 # model file
 model/
+
+# vscode
+launch.json
+settings.json
