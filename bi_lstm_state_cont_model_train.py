@@ -58,8 +58,8 @@ def run_trainning(model, fits, x_trains, y_trains, x_vals, y_vals):
         base_model_name = hnutile.FindBestModel(os.path.join(ROOT_DIR, MODEL_ROOT_DIR_NAME, MODEL_SUB_DIR_NAME, '%03d'%(i)), MODEL_FILE_PREFIX)
         if base_model_name != None:
             print('File %03dth: The best model to be use is model >> %s.'%(i ,base_model_name))
-            model = tf.keras.models.load_model(os.path.join(ROOT_DIR, MODEL_ROOT_DIR_NAME, MODEL_SUB_DIR_NAME, '%03d'%(i), base_model_name), compile=False)
-            model.compile(loss=root_mean_squared_error, optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE))
+            model = tf.keras.models.load_model(os.path.join(ROOT_DIR, MODEL_ROOT_DIR_NAME, MODEL_SUB_DIR_NAME, '%03d'%(i), base_model_name), compile=True)
+            # model.compile(loss=root_mean_squared_error, optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE))
         else:
             print('File %03dth: Best model does not exist.'%(i))
 
@@ -73,15 +73,18 @@ def create_bi_state_lstm_model(look_back=1):
     model = tf.keras.Sequential()
 
     for i in range(3):
-        model.add(tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128, batch_input_shape=(1, look_back, 1), stateful=True, return_sequences=True)))
+        model.add(tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(256, batch_input_shape=(1, look_back, 1), stateful=True, return_sequences=True)))
         model.add(tf.keras.layers.Dropout(0.3))
 
     model.add(tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(512, stateful=True, return_sequences=False)))
     model.add(tf.keras.layers.Dropout(0.3))
+    # model.add(tf.keras.layers.LeakyReLU(alpha=0.1))
+    # model.add(tf.keras.layers.Dense(1, activation=tf.keras.layers.LeakyReLU(alpha=0.01)))
     model.add(tf.keras.layers.Dense(1))
 
     # model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.000001))
-    model.compile(loss=root_mean_squared_error, optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001))
+    model.compile(loss=tf.keras.losses.MeanAbsoluteError(), optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001))
+    # model.compile(loss=root_mean_squared_error, optimizer=tf.keras.optimizers.Adam())
     return model
 
 def main():
@@ -90,6 +93,8 @@ def main():
     '''
 
     df = pd.read_csv(os.path.join(CSV_FILE_PATH ,'op10-3-train-01.csv'))
+
+    print(df.info())
     # 그래프 출력
     hnutile.ShowContinueGraph(df, yaxis='RollLoad')
     
